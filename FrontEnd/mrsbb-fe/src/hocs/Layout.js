@@ -7,6 +7,7 @@ const Layout = ({ checkAuthenticated, load_user, children }) => {
   useEffect(() => {
     checkAuthenticated();
     load_user();
+    // eslint-disable-next-line
   }, []);
 
   return (

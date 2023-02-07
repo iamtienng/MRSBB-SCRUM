@@ -21,6 +21,15 @@ const Navbar = ({ logout, isAuthenticated }) => {
 
   const authLinks = () => (
     <li className="nav-item">
+      <Link className="nav-link active" aria-current="page" to="/">
+        Home
+      </Link>
+      <Link className="nav-link active" aria-current="page" to="/suggest">
+        Your Top 10 Recommended Movies
+      </Link>
+      <Link className="nav-link active" aria-current="page" to="/search">
+        Search
+      </Link>
       <Link className="nav-link" to="#!" onClick={logout}>
         Logout
       </Link>
@@ -28,10 +37,10 @@ const Navbar = ({ logout, isAuthenticated }) => {
   );
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-dark bg-dark">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
-          MRSBB
+          Movie Recommendation System By Bot
         </a>
         <button
           className="navbar-toggler"
@@ -46,11 +55,6 @@ const Navbar = ({ logout, isAuthenticated }) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">
-                Home
-              </Link>
-            </li>
             {isAuthenticated ? authLinks() : guestLinks()}
           </ul>
         </div>

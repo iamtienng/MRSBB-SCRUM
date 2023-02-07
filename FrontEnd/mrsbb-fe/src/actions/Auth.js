@@ -156,10 +156,24 @@ export const signup =
         body,
         config
       );
+      // console.log(res.data.id);
+      // eslint-disable-next-line
+      const res_create_new_model = await axios.post(
+        `${process.env.REACT_APP_API_URL}/movie/create-new-user-model`,
+        { userID: res.data.id },
+        config
+      );
+      // eslint-disable-next-line
+      const res_train_model = await axios.post(
+        `${process.env.REACT_APP_API_URL}/movie/train-user-model`,
+        { userID: res.data.id },
+        config
+      );
       dispatch({
         type: SIGNUP_SUCCESS,
         payload: res.data,
       });
+
       accountCreated = true;
     } catch (err) {
       dispatch({

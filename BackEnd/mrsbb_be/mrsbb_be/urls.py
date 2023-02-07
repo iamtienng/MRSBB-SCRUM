@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('apitest/', include(MRSBB_urls)),
+    path('movie/', include(MRSBB_urls)),
 ]
 
 # urlpatterns += [re_path(r'^.*',
