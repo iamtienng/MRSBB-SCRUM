@@ -13,7 +13,7 @@ const SearchMovies = ({ isAuthenticated }) => {
 
   useEffect(() => {
     const getMovieRequest = async () => {
-      const url = `http://127.0.0.1:8000/movie/s?query=${search}`;
+      const url = `http://127.0.0.1:5000/movie/s?query=${search}`;
       const response = await fetch(url);
       const responseJson = await response.json();
 

@@ -27,9 +27,24 @@ def search_movie(request):
                 qs = Movie.objects.all()
                 qs = qs.filter(title__icontains=query)
                 data = MovieSerializer(qs, many=True).data
+                print(qs.count())
                 response = json.dumps(data)
             else:
                 response = None
+
+        except:
+            response = None
+    return HttpResponse(response, content_type='application/json')
+
+
+@csrf_exempt
+def get_movie_detail(request):
+    if request.method == 'GET':
+        try:
+            movieId = request.GET.get("query")
+            movie = Movie.objects.get(movieId=movieId)
+            data = MovieSerializer(movie, many=False).data
+            response = json.dumps(data)
 
         except:
             response = None
@@ -70,20 +85,6 @@ def train_model_for_user(request):
         except:
             response = json.dumps({'status': 'failed'})
 
-    return HttpResponse(response, content_type='application/json')
-
-
-@csrf_exempt
-def get_movie_detail(request):
-    if request.method == 'GET':
-        try:
-            movieId = request.GET.get("query")
-            movie = Movie.objects.get(movieId=movieId)
-            data = MovieSerializer(movie, many=False).data
-            response = json.dumps(data)
-
-        except:
-            response = None
     return HttpResponse(response, content_type='application/json')
 
 
