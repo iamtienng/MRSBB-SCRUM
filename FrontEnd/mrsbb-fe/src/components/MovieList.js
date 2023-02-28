@@ -18,12 +18,12 @@ const MovieList = (props) => {
           }}
         >
           <img
-            src={movie.posterUrl}
+            src={movie.moviePoster}
             style={{ width: "300px", height: "500px" }}
             alt="movie"
           ></img>
           <div className="overlay d-flex align-items-center justify-content-center">
-            {movie.title}
+            {movie.movieTitle}
           </div>
         </div>
       ))}

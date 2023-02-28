@@ -6,19 +6,23 @@ import "./CSS/SuggestMovies.css";
 import MovieList from "../../components/MovieList";
 import Heading from "../../components/Heading";
 
-const SuggestMovies = ({ isAuthenticated, user }) => {
-  const [userID, setUserID] = useState(-1);
+const SuggestMovies = ({ isAuthenticated }) => {
+  const [userId, setUserId] = useState(-1);
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    const getMovieRequest = async () => {
-      const url = `http://127.0.0.1:8000/movie/pred-top-ten`;
+    const getMovieRequest = async (userId) => {
+      if (userId === -1) return;
+      if (typeof userId == "undefined") return;
+      // alert(userId);
+      const url = `${process.env.REACT_APP_API_URL}/recommender/predict/topten/`;
       const response = await fetch(url, {
         method: "POST",
         header: {
           "Content-Type": "application/json",
+          Accept: "*/*",
         },
-        body: JSON.stringify({ userID: userID }),
+        body: JSON.stringify({ userId: userId }),
       });
       const responseJson = await response.json();
 
@@ -34,10 +38,10 @@ const SuggestMovies = ({ isAuthenticated, user }) => {
         setMovies(movies_data_ordered);
       }
     };
-    setUserID(user?.id);
-    getMovieRequest();
+    setUserId(localStorage.getItem("userId"));
+    getMovieRequest(userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userID]);
+  }, [userId]);
 
   if (isAuthenticated === false) {
     return <Navigate replace to="/login" />;
@@ -57,7 +61,6 @@ const SuggestMovies = ({ isAuthenticated, user }) => {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.Auth.isAuthenticated,
-  user: state.Auth.user,
 });
 
 export default connect(mapStateToProps)(SuggestMovies);

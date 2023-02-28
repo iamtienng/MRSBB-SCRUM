@@ -48,6 +48,7 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
       };
     case USER_LOADED_SUCCESS:
+      localStorage.setItem("userId", payload.id);
       return {
         ...state,
         user: payload,
@@ -67,6 +68,7 @@ export default function (state = initialState, action) {
     case LOGOUT:
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
+      localStorage.removeItem("userId");
       return {
         ...state,
         isAuthenticated: false,

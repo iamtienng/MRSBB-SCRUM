@@ -6,7 +6,7 @@ import "./CSS/MoviePage.css";
 import Heading from "../../components/Heading";
 import Rating from "../../components/Rating";
 
-const MoviePage = ({ isAuthenticated, user }) => {
+const MoviePage = ({ isAuthenticated }) => {
   const [userId, setUserId] = useState(-1);
   const [movie, setMovie] = useState([]);
   const [rating, setRating] = useState({});
@@ -22,9 +22,9 @@ const MoviePage = ({ isAuthenticated, user }) => {
 
   const createRatingRequest = async (ratingValue) => {
     setRating(ratingValue);
-    const url = `http://127.0.0.1:8000/movie/cr`;
+    const url = `${process.env.REACT_APP_API_URL}/rating/create/`;
     const body = JSON.stringify({
-      userId: user?.id,
+      userId: userId,
       movieId: movieId,
       rating: ratingValue,
     });
@@ -38,17 +38,24 @@ const MoviePage = ({ isAuthenticated, user }) => {
     const responseJson = await response.json();
 
     if (responseJson) {
-      if (responseJson.status === "created") {
+      if (responseJson.status !== "failed") {
+        setRating(responseJson);
+        setIsRated(true);
+        setIsRatedAnnouncement("Your rating for this movie is:");
+        setHelpAnnouncement(
+          "You can change your rating by clicking on the stars above"
+        );
       }
-      alert(responseJson.status);
+      // alert(responseJson);
     }
   };
 
   const updateRatingRequest = async (newRatingValue) => {
-    const url = `http://127.0.0.1:8000/movie/ur`;
+    const url = `${process.env.REACT_APP_API_URL}/rating/update/`;
     const body = JSON.stringify({
-      ratingId: rating.id,
-      newRating: newRatingValue,
+      userId: userId,
+      movieId: movieId,
+      rating: newRatingValue,
     });
     const response = await fetch(url, {
       method: "PUT",
@@ -62,13 +69,13 @@ const MoviePage = ({ isAuthenticated, user }) => {
     if (responseJson) {
       if (responseJson.status === "changed") {
       }
-      alert(responseJson.status);
+      // alert(responseJson.status);
     }
   };
 
   useEffect(() => {
     const getMovieRequest = async () => {
-      const url = `http://127.0.0.1:8000/movie/d?query=${movieId}`;
+      const url = `${process.env.REACT_APP_API_URL}/movie/d?query=${movieId}`;
       const response = await fetch(url, {
         method: "GET",
         header: {
@@ -82,32 +89,36 @@ const MoviePage = ({ isAuthenticated, user }) => {
       }
     };
 
-    const getRatingRequest = async (userIdFunc) => {
-      const url = `http://127.0.0.1:8000/movie/rr`;
-      const body = JSON.stringify({ userId: userIdFunc, movieId: movieId });
+    const getRatingRequest = async (userId, movieId) => {
+      if (userId === -1) return;
+      const url = `${process.env.REACT_APP_API_URL}/rating/read/`;
+      const body = JSON.stringify({ userId, movieId });
       const response = await fetch(url, {
         method: "POST",
         header: {
           "Content-Type": "application/json",
+          Accept: "*/*",
         },
         body,
       });
-      const responseJson = await response.json();
+      if (response.status === 200) {
+        const responseJson = await response.json();
 
-      if (responseJson) {
-        setRating(responseJson);
-        setIsRated(true);
-        setIsRatedAnnouncement("Your rating for this movie is:");
-        setHelpAnnouncement(
-          "You can change your rating by clicking on the stars above"
-        );
+        if (responseJson.status !== "failed") {
+          setRating(responseJson);
+          setIsRated(true);
+          setIsRatedAnnouncement("Your rating for this movie is:");
+          setHelpAnnouncement(
+            "You can change your rating by clicking on the stars above"
+          );
+        }
       }
     };
 
     getMovieRequest();
-    setUserId(user?.id);
-    getRatingRequest(userId);
-  }, [movieId, user, userId]);
+    setUserId(localStorage.getItem("userId"));
+    getRatingRequest(userId, movieId);
+  }, [movieId, userId]);
 
   if (isAuthenticated === false) {
     return <Navigate replace to="/login" />;
@@ -116,24 +127,24 @@ const MoviePage = ({ isAuthenticated, user }) => {
   return (
     <div className="container-fluid movie-app">
       <div className="d-flex justify-content-between mt-4 mb-4 ">
-        <Heading heading={movie.title} />
+        <Heading heading={movie.movieTitle} />
       </div>
       <div className="row row-cols-auto">
         <div className="d-flex justify-content-start m-3">
           <div className="image-container">
             <img
-              src={movie.posterUrl}
+              src={movie.moviePoster}
               style={{ width: "300px", height: "500px" }}
               alt="movie"
             ></img>
             <div className="overlay d-flex align-items-center justify-content-center">
-              {movie.title}
+              {movie.movieTitle}
             </div>
           </div>
           <div className="m-4 col">
             <h3> - - </h3>
             <h2>Genres</h2>
-            <h3>{movie.genres}</h3>
+            <h3>{movie.movieGenre}</h3>
             <h3> - - </h3>
             <h3>{isRatedAnnouncement}</h3>
             <Rating
@@ -156,7 +167,6 @@ const MoviePage = ({ isAuthenticated, user }) => {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.Auth.isAuthenticated,
-  user: state.Auth.user,
 });
 
 export default connect(mapStateToProps)(MoviePage);
