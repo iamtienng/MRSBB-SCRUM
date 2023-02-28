@@ -6,7 +6,7 @@ import "./CSS/MoviePage.css";
 import Heading from "../../components/Heading";
 import Rating from "../../components/Rating";
 
-const MoviePage = ({ isAuthenticated, user }) => {
+const MoviePage = ({ isAuthenticated }) => {
   const [userId, setUserId] = useState(-1);
   const [movie, setMovie] = useState([]);
   const [rating, setRating] = useState({});
@@ -24,7 +24,7 @@ const MoviePage = ({ isAuthenticated, user }) => {
     setRating(ratingValue);
     const url = `${process.env.REACT_APP_API_URL}/rating/create/`;
     const body = JSON.stringify({
-      userId: user?.id,
+      userId: userId,
       movieId: movieId,
       rating: ratingValue,
     });
@@ -53,7 +53,7 @@ const MoviePage = ({ isAuthenticated, user }) => {
   const updateRatingRequest = async (newRatingValue) => {
     const url = `${process.env.REACT_APP_API_URL}/rating/update/`;
     const body = JSON.stringify({
-      userId: user?.id,
+      userId: userId,
       movieId: movieId,
       rating: newRatingValue,
     });
@@ -116,9 +116,9 @@ const MoviePage = ({ isAuthenticated, user }) => {
     };
 
     getMovieRequest();
-    setUserId(user?.id);
+    setUserId(localStorage.getItem("userId"));
     getRatingRequest(userId, movieId);
-  }, [movieId, user, userId]);
+  }, [movieId, userId]);
 
   if (isAuthenticated === false) {
     return <Navigate replace to="/login" />;
@@ -167,7 +167,6 @@ const MoviePage = ({ isAuthenticated, user }) => {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.Auth.isAuthenticated,
-  user: state.Auth.user,
 });
 
 export default connect(mapStateToProps)(MoviePage);

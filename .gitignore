@@ -2,13 +2,11 @@
 BackEnd/MRSBBvenv
 FrontEnd/mrsbb-fe/node_modules
 .vscode
-BackEnd/mrsbb_be/MRSBB/migrations
-BackEnd/mrsbb_be/MRSBB/__pycache__
-BackEnd/mrsbb_be/mrsbb_be/__pycache__
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+__pycache__/
+mrsbb-venv/
 
 # dependencies
-FrontEnd/mrsbb-fe/node_modules
+node_modules/
 FrontEnd/mrsbb-fe/.pnp
 FrontEnd/mrsbb-fe/.pnp.js
 
